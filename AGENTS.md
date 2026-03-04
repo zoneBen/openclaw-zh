@@ -14,7 +14,10 @@
 - Tests: colocated `*.test.ts`.
 - Docs: `docs/` (images, queue, Pi config). Built output lives in `dist/`.
 - Plugins/extensions: live under `extensions/*` (workspace packages). Keep plugin-only deps in the extension `package.json`; do not add them to the root `package.json` unless core uses them.
+- Apps: `apps/macos`, `apps/ios`, `apps/android` (platform-specific client apps).
+- Architecture: Gateway is the control plane (ws://127.0.0.1:18789) → routes to Pi agent (RPC), CLI, WebChat UI, macOS app, iOS/Android nodes.
 - Plugins: install runs `npm install --omit=dev` in plugin dir; runtime deps must live in `dependencies`. Avoid `workspace:*` in `dependencies` (npm install breaks); put `openclaw` in `devDependencies` or `peerDependencies` instead (runtime resolves `openclaw/plugin-sdk` via jiti alias).
+- Plugin SDK: imported as `openclaw/plugin-sdk` at runtime; type-only imports in extensions use `devDependencies` for `openclaw`.
 - Installers served from `https://openclaw.ai/*`: live in the sibling repo `../openclaw.ai` (`public/install.sh`, `public/install-cli.sh`, `public/install.ps1`).
 - Messaging channels: always consider **all** built-in + extension channels when refactoring shared logic (routing, allowlists, pairing, command gating, onboarding, docs).
   - Core channel docs: `docs/channels/`
@@ -70,10 +73,12 @@
 - Format check: `pnpm format` (oxfmt --check)
 - Format fix: `pnpm format:fix` (oxfmt --write)
 - Tests: `pnpm test` (vitest); coverage: `pnpm test:coverage`
+- Run single test: `pnpm vitest run path/to/file.test.ts` or `pnpm vitest run -t "test name pattern"`
 
 ## Coding Style & Naming Conventions
 
 - Language: TypeScript (ESM). Prefer strict typing; avoid `any`.
+- Module resolution: NodeNext (ESM). Path aliases: `openclaw/plugin-sdk` → `src/plugin-sdk/*`.
 - Formatting/linting via Oxlint and Oxfmt; run `pnpm check` before commits.
 - Never add `@ts-nocheck` and do not disable `no-explicit-any`; fix root causes and update Oxlint/Oxfmt config only when required.
 - Dynamic import guardrail: do not mix `await import("x")` and static `import ... from "x"` for the same module in production code paths. If you need lazy loading, create a dedicated `*.runtime.ts` boundary (that re-exports from `x`) and dynamically import that boundary from lazy callers only.
