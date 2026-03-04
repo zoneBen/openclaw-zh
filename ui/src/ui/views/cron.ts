@@ -1047,7 +1047,7 @@ export function renderCron(props: CronProps) {
                     props.onFormChange({
                       sessionKey: (e.target as HTMLInputElement).value,
                     })}
-                  placeholder="agent:main:main"
+                  placeholder=${t("cron.form.sessionKeyPlaceholder")}
                 />
                 <div class="cron-help">
                   Optional routing key for job delivery and wake routing.
@@ -1125,7 +1125,7 @@ export function renderCron(props: CronProps) {
                             props.onFormChange({
                               deliveryAccountId: (e.target as HTMLInputElement).value,
                             })}
-                          placeholder="default"
+                          placeholder=${t("cron.form.modelOverridePlaceholder")}
                         />
                         <div class="cron-help">
                           Optional channel account ID for multi-account setups.
@@ -1215,7 +1215,7 @@ export function renderCron(props: CronProps) {
                                     props.onFormChange({
                                       failureAlertAfter: (e.target as HTMLInputElement).value,
                                     })}
-                                  placeholder="2"
+                                  placeholder=${t("cron.form.failureAlertAfterPlaceholder")}
                                 />
                                 <div class="cron-help">Consecutive errors before alerting.</div>
                                 ${renderFieldError(
@@ -1239,7 +1239,7 @@ export function renderCron(props: CronProps) {
                                       failureAlertCooldownSeconds: (e.target as HTMLInputElement)
                                         .value,
                                     })}
-                                  placeholder="3600"
+                                  placeholder=${t("cron.form.failureAlertCooldownPlaceholder")}
                                 />
                                 <div class="cron-help">Minimum seconds between alerts.</div>
                                 ${renderFieldError(
@@ -1273,7 +1273,7 @@ export function renderCron(props: CronProps) {
                                     props.onFormChange({
                                       failureAlertTo: (e.target as HTMLInputElement).value,
                                     })}
-                                  placeholder="+1555... or chat id"
+                                  placeholder=${t("cron.form.failureAlertToPlaceholder")}
                                 />
                                 <div class="cron-help">
                                   Optional recipient override for failure alerts.
@@ -1301,7 +1301,7 @@ export function renderCron(props: CronProps) {
                                     props.onFormChange({
                                       failureAlertAccountId: (e.target as HTMLInputElement).value,
                                     })}
-                                  placeholder="Account ID for multi-account setups"
+                                  placeholder=${t("cron.form.failureAlertAccountIdPlaceholder")}
                                 />
                               </label>
                             `
