@@ -1,4 +1,5 @@
 import { html, nothing } from "lit";
+import { t } from "../../i18n/index.ts";
 import { formatRelativeTimestamp } from "../format.ts";
 import type { DiscordStatus } from "../types.ts";
 import { renderChannelConfigSection } from "./channels.config.ts";
@@ -13,26 +14,26 @@ export function renderDiscordCard(params: {
 
   return html`
     <div class="card">
-      <div class="card-title">Discord</div>
-      <div class="card-sub">Bot status and channel configuration.</div>
+      <div class="card-title">${t("channels.discord.title")}</div>
+      <div class="card-sub">${t("channels.discord.subtitle")}</div>
       ${accountCountLabel}
 
       <div class="status-list" style="margin-top: 16px;">
         <div>
           <span class="label">Configured</span>
-          <span>${discord?.configured ? "Yes" : "No"}</span>
+          <span>${discord?.configured ? t("common.yes") : t("common.no")}</span>
         </div>
         <div>
           <span class="label">Running</span>
-          <span>${discord?.running ? "Yes" : "No"}</span>
+          <span>${discord?.running ? t("common.yes") : t("common.no")}</span>
         </div>
         <div>
           <span class="label">Last start</span>
-          <span>${discord?.lastStartAt ? formatRelativeTimestamp(discord.lastStartAt) : "n/a"}</span>
+          <span>${discord?.lastStartAt ? formatRelativeTimestamp(discord.lastStartAt) : t("common.na")}</span>
         </div>
         <div>
           <span class="label">Last probe</span>
-          <span>${discord?.lastProbeAt ? formatRelativeTimestamp(discord.lastProbeAt) : "n/a"}</span>
+          <span>${discord?.lastProbeAt ? formatRelativeTimestamp(discord.lastProbeAt) : t("common.na")}</span>
         </div>
       </div>
 
@@ -47,7 +48,7 @@ export function renderDiscordCard(params: {
       ${
         discord?.probe
           ? html`<div class="callout" style="margin-top: 12px;">
-            Probe ${discord.probe.ok ? "ok" : "failed"} ·
+            Probe ${discord.probe.ok ? t("common.ok") : t("common.failed")} ·
             ${discord.probe.status ?? ""} ${discord.probe.error ?? ""}
           </div>`
           : nothing
@@ -57,7 +58,7 @@ export function renderDiscordCard(params: {
 
       <div class="row" style="margin-top: 12px;">
         <button class="btn" @click=${() => props.onRefresh(true)}>
-          Probe
+          ${t("common.probe")}
         </button>
       </div>
     </div>

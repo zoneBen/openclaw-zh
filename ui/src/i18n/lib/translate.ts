@@ -1,4 +1,5 @@
 import { en } from "../locales/en.ts";
+import { zh_CN } from "../locales/zh-CN.ts";
 import {
   DEFAULT_LOCALE,
   SUPPORTED_LOCALES,
@@ -14,7 +15,9 @@ export { SUPPORTED_LOCALES, isSupportedLocale };
 
 class I18nManager {
   private locale: Locale = DEFAULT_LOCALE;
-  private translations: Partial<Record<Locale, TranslationMap>> = { [DEFAULT_LOCALE]: en };
+  private translations: Partial<Record<Locale, TranslationMap>> = {
+    [DEFAULT_LOCALE]: DEFAULT_LOCALE === "zh-CN" ? zh_CN : en,
+  };
   private subscribers: Set<Subscriber> = new Set();
 
   constructor() {
