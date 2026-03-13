@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - feature/dashboard-i18n-zh
     tags:
       - "v*"
     paths-ignore:
@@ -58,6 +59,10 @@ jobs:
             tags+=("${IMAGE}:main-amd64")
             slim_tags+=("${IMAGE}:main-slim-amd64")
           fi
+          if [[ "${GITHUB_REF}" == "refs/heads/feature/dashboard-i18n-zh" ]]; then
+            tags+=("${IMAGE}:zh-cn-amd64")
+            slim_tags+=("${IMAGE}:zh-cn-slim-amd64")
+          fi
           if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
             version="${GITHUB_REF#refs/tags/v}"
             tags+=("${IMAGE}:${version}-amd64")
@@ -86,6 +91,9 @@ jobs:
           version="${GITHUB_SHA}"
           if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
             version="main"
+          fi
+          if [[ "${GITHUB_REF}" == "refs/heads/feature/dashboard-i18n-zh" ]]; then
+            version="zh-cn"
           fi
           if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
             version="${GITHUB_REF#refs/tags/v}"
@@ -159,6 +167,10 @@ jobs:
             tags+=("${IMAGE}:main-arm64")
             slim_tags+=("${IMAGE}:main-slim-arm64")
           fi
+          if [[ "${GITHUB_REF}" == "refs/heads/feature/dashboard-i18n-zh" ]]; then
+            tags+=("${IMAGE}:zh-cn-arm64")
+            slim_tags+=("${IMAGE}:zh-cn-slim-arm64")
+          fi
           if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
             version="${GITHUB_REF#refs/tags/v}"
             tags+=("${IMAGE}:${version}-arm64")
@@ -187,6 +199,9 @@ jobs:
           version="${GITHUB_SHA}"
           if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
             version="main"
+          fi
+          if [[ "${GITHUB_REF}" == "refs/heads/feature/dashboard-i18n-zh" ]]; then
+            version="zh-cn"
           fi
           if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
             version="${GITHUB_REF#refs/tags/v}"
@@ -254,6 +269,10 @@ jobs:
           if [[ "${GITHUB_REF}" == "refs/heads/main" ]]; then
             tags+=("${IMAGE}:main")
             slim_tags+=("${IMAGE}:main-slim")
+          fi
+          if [[ "${GITHUB_REF}" == "refs/heads/feature/dashboard-i18n-zh" ]]; then
+            tags+=("${IMAGE}:zh-cn")
+            slim_tags+=("${IMAGE}:zh-cn-slim")
           fi
           if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
             version="${GITHUB_REF#refs/tags/v}"
