@@ -3,7 +3,6 @@ name: Docker Release
 on:
   push:
     branches:
-      - main
       - feature/dashboard-i18n-zh
     tags:
       - "v*"
