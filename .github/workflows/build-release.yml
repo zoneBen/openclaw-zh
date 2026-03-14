@@ -34,9 +34,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build UI
-        run: pnpm ui:build
-
       - name: Build core
         run: |
           # Bundle A2UI first (required for build)
@@ -48,6 +45,9 @@ jobs:
           node --import tsx scripts/write-plugin-sdk-entry-dts.ts
           node --import tsx scripts/canvas-a2ui-copy.ts
           node --import tsx scripts/write-build-info.ts
+
+      - name: Build UI
+        run: pnpm ui:build
 
       - name: Verify build output
         run: |
