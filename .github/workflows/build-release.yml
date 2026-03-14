@@ -1,0 +1,93 @@
+name: Build Release
+
+on:
+  push:
+    branches:
+      - feature/dashboard-i18n-zh
+  workflow_dispatch:
+
+concurrency:
+  group: build-release-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: blacksmith-16vcpu-ubuntu-2404
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build UI
+        run: pnpm ui:build
+
+      - name: Build core
+        run: |
+          export NODE_OPTIONS="--max-old-space-size=4096"
+          node scripts/tsdown-build.mjs
+          node scripts/copy-plugin-sdk-root-alias.mjs
+          pnpm build:plugin-sdk:dts
+          node --import tsx scripts/write-plugin-sdk-entry-dts.ts
+          node --import tsx scripts/canvas-a2ui-copy.ts
+          node --import tsx scripts/write-build-info.ts
+
+      - name: Verify build output
+        run: |
+          echo "=== dist/control-ui ==="
+          ls -la dist/control-ui/
+          echo "=== dist/plugin-sdk ==="
+          ls -la dist/plugin-sdk/ | head -20
+          echo "=== File count ==="
+          find dist/ -type f | wc -l
+
+      - name: Create release package
+        run: |
+          ./scripts/build.sh --package --output openclaw-release.tar.gz
+
+      - name: Show package info
+        run: |
+          echo "=== Package size ==="
+          ls -lh openclaw-release.tar.gz
+          echo "=== Package contents ==="
+          tar -tzf openclaw-release.tar.gz | head -50
+          echo "=== control-ui files ==="
+          tar -tzf openclaw-release.tar.gz | grep "control-ui" | wc -l
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: openclaw-release
+          path: openclaw-release.tar.gz
+          retention-days: 30
+
+      - name: Create GitHub Release (on tag)
+        if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          RELEASE_NAME="OpenClaw $TAG_NAME"
+          # Check if release exists
+          if gh release view "$TAG_NAME" &>/dev/null; then
+            echo "Release $TAG_NAME already exists, updating..."
+            gh release upload "$TAG_NAME" openclaw-release.tar.gz --clobber
+          else
+            echo "Creating release $TAG_NAME..."
+            gh release create "$TAG_NAME" openclaw-release.tar.gz -t "$RELEASE_NAME" -F CHANGELOG.md
+          fi
