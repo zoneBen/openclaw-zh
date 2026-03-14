@@ -39,6 +39,8 @@ jobs:
 
       - name: Build core
         run: |
+          # Bundle A2UI first (required for build)
+          pnpm canvas:a2ui:bundle
           export NODE_OPTIONS="--max-old-space-size=4096"
           node scripts/tsdown-build.mjs
           node scripts/copy-plugin-sdk-root-alias.mjs
